@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+  import Home from './components/Home.vue';
 </script>
 
 <template>
-  <HelloWorld />
+  <RouterLink to="/">Go to Home</RouterLink>
+  <RouterLink to="/auth">Go to Auth</RouterLink>
+
+  <RouterView></RouterView>
 </template>
