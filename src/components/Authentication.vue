@@ -4,5 +4,5 @@
 
 <template>
     <h1>This is Auth page</h1>
-    <button>Continue with Google</button>
+    <a href="http://localhost:3000/auth/google">Continue with Google</a>
 </template>
