@@ -1,16 +1,42 @@
 import { createWebHistory, createRouter } from 'vue-router'
 
-import Home from '../components/Home.vue';
-import Authentication from '../components/Authentication.vue';
+import GuestView from '../views/GuestView.vue';
 import Dashboard from '../components/Dashboard.vue';
+import Authentication from '../components/Authentication.vue';
+import UserView from '../views/UserView.vue';
+import AuthenticationView from '../views/AuthenticationView.vue';
 
 const routes = [
-  { path: '/', component: Home },
-  { path: '/auth', component: Authentication },
-  { path: '/dashboard', component: Dashboard },
+	{ 
+		path: '/', 
+		component: GuestView,
+		name: "Guest View",
+	},
+	{
+		path: '/user',
+		component: UserView,
+		name: "User View",
+		// children: [
+		// 	{
+		// 		path: 'dashboard',
+		// 		name: 'Dashboard',
+		// 		component: Dashboard
+		// 	},			
+		// 	{
+		// 		path: 'auth',
+		// 		name: 'Authentication',
+		// 		component: Authentication
+		// 	}
+		// ]
+	},
+	{
+		path: '/login',
+		component: AuthenticationView,
+		name: "Authentication View"
+	}
 ]
 
 export const router = createRouter({
-  history: createWebHistory(),
-  routes,
+	history: createWebHistory(),
+	routes,
 })
