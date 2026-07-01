@@ -15,19 +15,13 @@ const routes = [
 	{
 		path: '/user',
 		component: UserView,
-		name: "User View",
-		// children: [
-		// 	{
-		// 		path: 'dashboard',
-		// 		name: 'Dashboard',
-		// 		component: Dashboard
-		// 	},			
-		// 	{
-		// 		path: 'auth',
-		// 		name: 'Authentication',
-		// 		component: Authentication
-		// 	}
-		// ]
+		children: [
+			{
+				path: 'dashboard',
+				name: 'Dashboard',
+				component: Dashboard
+			},	
+		]
 	},
 	{
 		path: '/login',
