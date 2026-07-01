@@ -37,9 +37,9 @@
 </script>
 
 <template>
-    <div class="flex">
+    <div class="flex h-screen overflow-hidden">
         <!-- SIDEBAR -->
-        <div class="w-64 h-full px-4 py-8 bg-zinc-50 flex flex-col gap-8">
+        <div class="w-64 h-screen shrink-0 px-4 py-8 bg-zinc-50 flex flex-col gap-8">
             <div class="font-bold text-4xl bg-indigo-100 border-2 rounded-md text-center text-indigo-600 hover:cursor-pointer py-2">LOGO</div>
             <div class="w-full h-full flex flex-col justify-between">
                 <div class="flex flex-col gap-2">
@@ -66,6 +66,6 @@
                 </div>
             </div>
         </div>
-        <router-view class="w-full h-full" />
+        <router-view class="w-full h-full overflow-auto" />
     </div>
 </template>

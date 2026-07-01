@@ -3,5 +3,8 @@
 </script>
 
 <template>
-    <h1>This is Dashboard (only for authorized users)</h1>
+    <div class="px-4 pt-12 bg-red-300">
+        <div class="text-2xl bg-green-300 font-semibold">Dashboard</div>
+        <div>conten here</div>
+    </div>
 </template>
