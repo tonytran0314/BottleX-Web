@@ -49,7 +49,7 @@
                             v-for="item in menuItems"
                             :key="item.destination"
                             :to="item.destination"
-                            class="flex gap-2 items-center hover:bg-indigo-100 hover:cursor-pointer py-3 px-4 rounded text-zinc-600 hover:text-indigo-800 font-medium">
+                            class="flex gap-2 items-center hover:bg-indigo-100 hover:cursor-pointer py-3 px-4 rounded text-zinc-600 hover:text-indigo-600 font-medium">
                             <div><component :is="item.icon" class="size-5" /></div>
                             <div class="text-sm">{{ item.title }}</div>
                         </router-link>
@@ -66,6 +66,6 @@
                 </div>
             </div>
         </div>
-        <router-view class="w-full h-full overflow-auto" />
+        <router-view class="w-full h-full overflow-y-auto px-8 py-12" />
     </div>
 </template>
