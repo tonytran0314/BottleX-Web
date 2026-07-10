@@ -1,6 +1,12 @@
 <script setup lang="ts">
     import { LayoutDashboard, ArrowRightLeft, Milk, Star, PiggyBank, Settings } from '@lucide/vue';
     import api from '../services/axios';
+    import { ref } from 'vue';
+
+    type UserInfo = {
+        fullName: string;
+        email: string
+    }
 
     const menuItems = [
         {
@@ -34,6 +40,19 @@
             destination: "/user/settings"
         }
     ];
+
+    const userInfo = ref<UserInfo | null>(null);
+    const isLoadingUserInfo = ref(true);
+
+    async function getUserInfo() {
+        const response = await api.get("/users");
+
+        isLoadingUserInfo.value = false;
+
+        userInfo.value = response.data;
+    }
+
+    getUserInfo();
 </script>
 
 <template>
@@ -60,7 +79,8 @@
                 <div class="bg-zinc-50 hover:bg-white hover:cursor-pointer flex p-2 gap-2 items-center rounded-md hover:shadow-sm">
                     <div class="bg-indigo-600 min-w-12 min-h-12 size-12 rounded-full"></div>
                     <div>
-                        <div class="line-clamp-1 text-sm font-medium">Tran Gia Huy</div>
+                        <div v-if="isLoadingUserInfo" class="line-clamp-1 text-sm font-medium"></div>
+                        <div v-else class="line-clamp-1 text-sm font-medium">{{ userInfo?.fullName ?? 'Unknow User' }}</div>
                         <div class="line-clamp-1 text-zinc-400 text-xs">Premium User</div>
                     </div>
                 </div>
