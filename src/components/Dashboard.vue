@@ -1,7 +1,46 @@
 <script setup lang="ts">
 import { BanknoteArrowDown, BanknoteArrowUp, CircleDashed, Ellipsis, HandCoins, Wallet } from '@lucide/vue';
+import { ref } from 'vue';
+import api from '../services/axios';
 
+type Account = {
+    balance: number,
+    safeToSpend: number,
+    safeToSpendUntil: string
+}
 
+type Transaction = {
+    id: number;
+    amount: number;
+    image: string;
+    name: string;
+    note: string;
+    transactionDate: string;
+    type: string;
+    userId: number;
+}
+
+const account = ref<Account | null>(null);
+const transactions = ref<Transaction[] | null>(null);
+const isLoadingAccount = ref(true);
+const isLoadingTransactions = ref(true);
+
+async function getAccount() {
+    const response = await api.get("/accounts");
+    account.value = response.data
+    isLoadingAccount.value = false
+}
+
+async function getTransactions() {
+    const response = await api.get("/transactions");
+
+    isLoadingTransactions.value = false;
+
+    transactions.value = response.data;
+}
+
+getTransactions();
+getAccount();
 </script>
 
 <template>
@@ -11,14 +50,15 @@ import { BanknoteArrowDown, BanknoteArrowUp, CircleDashed, Ellipsis, HandCoins, 
         
         <div class="flex flex-col gap-6 h-full">
         
-            <div class="flex gap-6">
+            <div v-if="isLoadingAccount">loading account</div>
+            <div v-else class="flex gap-6">
                 <div class="flex justify-between items-center flex-1 border border-solid border-zinc-200 p-4 rounded-lg">
                     <div class="flex flex-col gap-2">
                         <div class="text-md">Safe to spend</div>
-                        <div class="font-medium text-2xl">$3,200.00</div>
+                        <div class="font-medium text-2xl">${{ account?.safeToSpend }}</div>
                         <div class="text-xs text-zinc-500 flex gap-1 items-center">
                             <div>until</div>
-                            <div class="bg-green-100 px-1 py-0.5 rounded text-green-400 font-medium">Jul 8, 2026</div> 
+                            <div class="bg-green-100 px-1 py-0.5 rounded text-green-400 font-medium">{{ account?.safeToSpendUntil }}</div> 
                         </div>
                     </div>
                     <div class="bg-indigo-100 rounded-lg p-3 text-indigo-600"><HandCoins /></div>
@@ -26,7 +66,7 @@ import { BanknoteArrowDown, BanknoteArrowUp, CircleDashed, Ellipsis, HandCoins, 
                 <div class="flex justify-between items-center flex-1 border border-solid border-zinc-200 p-4 rounded-lg">
                     <div class="flex flex-col gap-2">
                         <div class="text-md">Current balance</div>
-                        <div class="font-medium text-2xl">$3,200.00</div>
+                        <div class="font-medium text-2xl">${{ account?.balance }}</div>
                         <div class="text-xs text-zinc-500 flex gap-1 items-center">
                             <div class="bg-green-100 px-1 py-0.5 rounded text-green-400 font-medium">+ $40</div> 
                             <div>from last transaction</div>
@@ -110,9 +150,15 @@ import { BanknoteArrowDown, BanknoteArrowUp, CircleDashed, Ellipsis, HandCoins, 
                             <div class="cursor-pointer text-sm text-indigo-600 hover:underline">See all</div>
                         </div>
                         <div class="flex flex-col gap-1.5">
-                            <div v-for="value in 4" class="flex justify-between">
-                                <div>Salary</div>
-                                <div>+ $400</div>
+                            <div v-for="transaction in transactions" class="flex justify-between">
+                                <div>{{ transaction.name }}</div>
+
+                                <div>
+                                    <span v-if="transaction.type === 'INCOME'">+</span>
+                                    <span v-else-if="transaction.type === 'EXPENSE'">-</span>
+                                    
+                                    <span>${{ transaction.amount }}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
