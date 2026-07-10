@@ -1,5 +1,31 @@
 <script setup lang="ts">
     import { PlusCircle } from '@lucide/vue';
+    import api from '../services/axios';
+    import { ref } from 'vue';
+
+    type Transaction = {
+        id: number;
+        amount: number;
+        image: string;
+        name: string;
+        note: string;
+        transactionDate: string;
+        type: string;
+        userId: number;
+    }
+
+    const transactions = ref<Transaction[] | null>(null);
+    const isLoadingTransactions = ref(true);
+
+    async function getTransactions() {
+        const response = await api.get("/transactions");
+
+        isLoadingTransactions.value = false;
+
+        transactions.value = response.data;
+    }
+
+    getTransactions();
 </script>
 
 <template>
@@ -18,7 +44,8 @@
         
        
 
-        <div class="relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border border-default">
+        <div v-if="isLoadingTransactions">loading transactions</div>
+        <div v-else class="relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border border-default">
             <table class="w-full text-sm text-left rtl:text-right text-body">
                 <thead class="text-sm text-body bg-neutral-secondary-soft border-b rounded-base border-default">
                     <tr>
@@ -37,18 +64,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="value in 8" class="bg-neutral-primary border-b border-default">
+                    <tr v-for="transaction in transactions" class="bg-neutral-primary border-b border-default">
                         <th scope="row" class="px-6 py-4 font-medium text-heading whitespace-nowrap">
-                            Apple MacBook Pro 17"
+                            {{ transaction.name }}
                         </th>
                         <td class="px-6 py-4">
-                            Silver
+                            <span v-if="transaction.type === 'EXPENSE'">-</span> 
+                            <span v-else-if="transaction.type === 'INCOME'">+</span> 
+                            
+                            <span>${{ transaction.amount }}</span>
                         </td>
                         <td class="px-6 py-4">
-                            Laptop
+                            {{ transaction.note }}
                         </td>
                         <td class="px-6 py-4">
-                            $2999
+                            {{ transaction.transactionDate }}
                         </td>
                     </tr>
                 </tbody>
