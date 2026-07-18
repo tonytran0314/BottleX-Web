@@ -20,10 +20,45 @@ type Transaction = {
     userId: number;
 }
 
+type PaymentInstance = {
+    id: number;
+    name: string;
+    amount: number;
+    preparedAmount: number;
+    isPaid: boolean;
+    dueDate: string;
+}
+
+type wishlistItem = {
+    id: number;
+    name: string;
+    price: number;
+    reserved: number;
+    image: string;
+    description: string;
+    userId: number;
+}
+
+type Fund = {
+    id: number;
+    name: string;
+    reserved: number;
+    image: string;
+    description: string;
+    userId: number;
+}
+
 const account = ref<Account | null>(null);
 const transactions = ref<Transaction[] | null>(null);
+const paymentInstances = ref<PaymentInstance[] | null>(null);
+const wishlistItems = ref<wishlistItem[] | null>(null);
+const funds = ref<Fund[] | null>(null);
+
 const isLoadingAccount = ref(true);
 const isLoadingTransactions = ref(true);
+const isLoadingPaymentInstances = ref(true);
+const isLoadingWishlistItems = ref(true);
+const isLoadingFunds = ref(true);
 
 async function getAccount() {
     const response = await api.get("/accounts");
@@ -39,8 +74,36 @@ async function getTransactions() {
     transactions.value = response.data;
 }
 
+async function getPaymentInstances() {
+    const response = await api.get('/payment-instances');
+
+    isLoadingPaymentInstances.value = false;
+
+    paymentInstances.value = response.data;
+    console.log(paymentInstances.value)
+} 
+
+async function getWishlistItems() {
+    const response = await api.get('/wishlists');
+
+    isLoadingWishlistItems.value = false;
+
+    wishlistItems.value = response.data;
+}
+
+async function getFunds() {
+    const response = await api.get('/funds');
+
+    isLoadingFunds.value = false;
+
+    funds.value = response.data;
+}
+
 getTransactions();
 getAccount();
+getPaymentInstances();
+getWishlistItems();
+getFunds();
 </script>
 
 <template>
@@ -102,13 +165,13 @@ getAccount();
                 <div class="flex flex-col flex-3 p-4 border border-solid border-zinc-200 rounded-lg gap-2">
                     <div class="font-medium text-xl">Payments timeline</div>
                     <div class="overflow-y-scroll flex flex-col gap-8 items-center">
-                        <div v-for="value in 16" class="flex flex-col gap-2 border border-solid border-zinc-200 rounded-lg p-4 w-1/2">
+                        <div v-for="paymentInstance in paymentInstances" class="flex flex-col gap-2 border border-solid border-zinc-200 rounded-lg p-4 w-1/2">
                             <div class="flex justify-between">
-                                <div class="text-lg">Springfield rent</div>
+                                <div class="text-lg">{{ paymentInstance.name }}</div>
                                 <div><CircleDashed class="size-5 text-zinc-500" /></div>
                             </div>
-                            <div class="text-sm text-zinc-500">$0 / $1000</div>
-                            <div class="text-sm text-zinc-500">Aug 5, 2026</div>
+                            <div class="text-sm text-zinc-500">${{ paymentInstance.preparedAmount }} / ${{ paymentInstance.amount }}</div>
+                            <div class="text-sm text-zinc-500">{{ paymentInstance.dueDate }}</div>
                             <div class="flex gap-4 justify-between items-center">
                                 <div class="bg-indigo-100 text-indigo-600 cursor-pointer hover:bg-indigo-600 hover:text-white py-2 rounded-md transition duration-150 w-full text-center text-sm">Add money</div>
                                 <div class="cursor-pointer"><Ellipsis class="size-5" /></div>
@@ -124,9 +187,9 @@ getAccount();
                             <div class="cursor-pointer text-sm text-indigo-600 hover:underline">See all</div>
                         </div>
                         <div class="flex flex-col gap-1.5">
-                            <div v-for="value in 4" class="flex justify-between">
-                                <div>Monitor 27in 4K</div>
-                                <div>$24 / $399</div>
+                            <div v-for="item in wishlistItems" class="flex justify-between">
+                                <div>{{ item.name }}</div>
+                                <div>${{ item.reserved }} / ${{ item.price }}</div>
                             </div>
                         </div>
                     </div>
@@ -137,9 +200,9 @@ getAccount();
                             <div class="cursor-pointer text-sm text-indigo-600 hover:underline">See all</div>
                         </div>
                         <div class="flex flex-col gap-1.5">
-                            <div v-for="value in 4" class="flex justify-between">
-                                <div>Monitor 27in 4K</div>
-                                <div>$840</div>
+                            <div v-for="fund in funds" class="flex justify-between">
+                                <div>{{ fund.name }}</div>
+                                <div>reserved ${{ fund.reserved }}</div>
                             </div>
                         </div>
                     </div>

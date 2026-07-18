@@ -24,6 +24,27 @@ console.log(response.data)
     payments.value = response.data;
 }
 
+async function addNewPayment() {
+    const newPayment = {
+        "name": "Car Insurance",
+        "amount": 672,
+        "startDate": "2026-10-01T12:00:00.000Z",
+        "endDate": "2026-12-18T12:00:00.000Z",
+        // "userId": 1,
+        "dueDates": [5]
+    }
+
+    try {
+    const response = await api.post("/payments", newPayment);
+
+    console.log(response.data);
+    } catch (error: any) {
+    console.log("Status:", error.response?.status);
+    console.log("Backend error:", error.response?.data);
+    console.log("Message:", error.message);
+    }
+}
+
 getPayments();
 </script>
 
@@ -32,7 +53,7 @@ getPayments();
         <!-- Header -->
         <div class="flex items-center justify-between">
             <div class="text-2xl font-semibold">Payments</div>
-            <div class="bg-indigo-100 flex items-center cursor-pointer gap-1.5 rounded-md px-4 py-3 text-indigo-600 hover:bg-indigo-600 hover:text-white transition duration-150">
+            <div class="bg-indigo-100 flex items-center cursor-pointer gap-1.5 rounded-md px-4 py-3 text-indigo-600 hover:bg-indigo-600 hover:text-white transition duration-150" v-on:click="addNewPayment">
                 <div><PlusCircle class="size-5" /></div>
                 <div class="text-sm font-semibold">New payment</div>
             </div>
